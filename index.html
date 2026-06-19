@@ -6,7 +6,7 @@
   <title>Voice Trainer - English Pronunciation</title>
   <style>
     /* ============================================================
-           RESET & BASE – KID‑FRIENDLY THEME
+           RESET & BASE – CLEAN & MODERN
            ============================================================ */
     * {
       margin: 0;
@@ -15,7 +15,7 @@
     }
 
     body {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
       min-height: 100vh;
       background: linear-gradient(145deg, #f9e7b2 0%, #f5d0b8 50%, #e8c9d9 100%);
       padding: 16px;
@@ -58,7 +58,7 @@
     }
 
     /* ============================================================
-           HEADER – JOYEUX ET COLORÉ
+           HEADER – JOYEUX MAIS PLUS SOBRE
            ============================================================ */
     .header {
       background: linear-gradient(135deg, #ff8a5c, #ff6f3c);
@@ -67,7 +67,7 @@
       border-radius: 60px 60px 30px 30px;
       margin-bottom: 20px;
       text-align: center;
-      box-shadow: 0 8px 0 #c94f2a, 0 12px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 0 #c94f2a, 0 8px 20px rgba(0, 0, 0, 0.10);
       transform: rotate(-0.5deg);
       transition: transform 0.2s;
     }
@@ -78,8 +78,8 @@
 
     .header h1 {
       font-size: 1.8rem;
-      letter-spacing: 1px;
-      text-shadow: 3px 3px 0 #b84a2a;
+      letter-spacing: 0.5px;
+      text-shadow: 2px 2px 0 #b84a2a;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -93,7 +93,9 @@
       font-size: 1rem;
       padding: 4px 16px;
       border-radius: 40px;
-      box-shadow: inset 0 -3px 0 #b38f4a;
+      /* Suppression de l'ombre interne lourde */
+      box-shadow: none;
+      border: 2px solid #fff3c9;
     }
 
     .header p {
@@ -116,7 +118,7 @@
       backdrop-filter: blur(12px);
       border-radius: 48px;
       padding: 24px 20px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.10);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
       border: 2px solid rgba(255, 255, 255, 0.5);
     }
 
@@ -152,7 +154,7 @@
       padding: 18px 22px;
       cursor: pointer;
       transition: all 0.15s ease;
-      box-shadow: 0 6px 0 #dba87a, 0 8px 16px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 0 #dba87a, 0 6px 12px rgba(0, 0, 0, 0.04);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -162,7 +164,7 @@
 
     .text-card:active {
       transform: scale(0.97);
-      box-shadow: 0 2px 0 #dba87a;
+      box-shadow: 0 1px 0 #dba87a;
     }
 
     .text-card:hover {
@@ -223,7 +225,7 @@
       border: none;
       border-radius: 60px;
       cursor: pointer;
-      box-shadow: 0 4px 0 #c0a38a;
+      box-shadow: 0 3px 0 #c0a38a;
       transition: all 0.1s;
       display: flex;
       align-items: center;
@@ -241,7 +243,7 @@
       backdrop-filter: blur(16px);
       border-radius: 48px;
       padding: 24px 20px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
       border: 2px solid rgba(255, 255, 255, 0.5);
     }
 
@@ -275,7 +277,7 @@
       padding: 20px 24px;
       border-radius: 32px;
       margin-bottom: 20px;
-      box-shadow: inset 0 -4px 0 #dba87a;
+      box-shadow: inset 0 -2px 0 #dba87a;
     }
 
     .sentence-text {
@@ -306,7 +308,7 @@
     }
 
     /* ============================================================
-           CONTROLS – GROS BOUTONS AMUSANTS
+           CONTROLS – BOUTONS MODERNES
            ============================================================ */
     .controls {
       display: flex;
@@ -325,7 +327,7 @@
       cursor: pointer;
       min-width: 110px;
       transition: all 0.1s ease;
-      box-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -335,51 +337,51 @@
 
     button:active {
       transform: scale(0.94);
-      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
     }
 
     button:disabled {
       opacity: 0.5;
       transform: none;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
       cursor: not-allowed;
     }
 
     #playBtn {
       background: #6ec6ff;
       color: #003d66;
-      box-shadow: 0 6px 0 #3d8fc9;
+      box-shadow: 0 4px 0 #3d8fc9;
     }
 
     #repeatBtn {
       background: #ffb347;
       color: #4d2b00;
-      box-shadow: 0 6px 0 #cc8a2e;
+      box-shadow: 0 4px 0 #cc8a2e;
     }
 
     #repeatBtn.recording {
       background: #ff6b6b;
       color: #5a1a1a;
-      box-shadow: 0 6px 0 #b34747;
+      box-shadow: 0 4px 0 #b34747;
       animation: pulse 1s infinite;
     }
 
     #nextBtn {
       background: #7bcfb0;
       color: #1a4a3a;
-      box-shadow: 0 6px 0 #4f9a80;
+      box-shadow: 0 4px 0 #4f9a80;
     }
 
     #nextBtn.success {
       background: #4caf84;
       color: white;
-      box-shadow: 0 6px 0 #2e7d5e;
+      box-shadow: 0 4px 0 #2e7d5e;
     }
 
     #resetBtn {
       background: #ff8a8a;
       color: #5a1a1a;
-      box-shadow: 0 6px 0 #b85a5a;
+      box-shadow: 0 4px 0 #b85a5a;
     }
 
     button.outline {
@@ -398,7 +400,7 @@
       padding: 16px 20px;
       margin: 16px 0;
       text-align: center;
-      box-shadow: inset 0 -6px 0 #1a1230, 0 8px 24px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 -4px 0 #1a1230, 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
     canvas {
@@ -668,7 +670,7 @@
   </div>
 
   <!-- ============================================================
-  JAVASCRIPT – AVEC TRADUCTIONS FRANÇAISES
+  JAVASCRIPT – AVEC TRADUCTIONS FRANÇAISES (inchangé)
   ============================================================ -->
   <script>
     // =============================================================
