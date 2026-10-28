@@ -809,6 +809,7 @@
       lockedSet=new Set((l.data||[]).map(r=>r.unit_id));
       if(m.data&&m.data.length){$('msgBox').style.display='block';$('msgList').innerHTML=m.data.map(x=>`<div class="msg">${x.body.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}<br><small>${new Date(x.created_at).toLocaleDateString('fr-FR')}</small></div>`).join('')}
       buildHomeScreen();homeScreen.style.display='block';}
+    mode(false);
     start();
   </script>
 
