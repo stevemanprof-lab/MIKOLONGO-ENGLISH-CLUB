@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin – Mikolongo English Club</title>
+<meta name="robots" content="noindex"><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="config.js"></script></head><body>
+<div class="top"><h1>⚙️ Administration<small>Mikolongo English Club</small></h1><div><button class="sm ghost" id="out">Déconnexion</button></div></div>
+<div class="wrap" id="app" style="display:none">
+<div class="tabs" id="tabs"><button data-t="stu" class="on">👥 Élèves & classement</button><button data-t="thm">📚 Thèmes</button><button data-t="msg">📩 Messages</button><button data-t="set">🔧 Réglages</button></div>
+<section id="stu"><div class="kpis" id="kpis"></div>
+<div class="panel"><div class="row2"><input id="q" placeholder="🔍 Rechercher un nom, un numéro…"><select id="fc"><option value="">Toutes les classes</option></select></div>
+<div class="row2"><select id="sort"><option value="points">Trier : score</option><option value="validated">Trier : progression</option><option value="name">Trier : nom</option><option value="last">Trier : dernière activité</option></select><button id="add">➕ Ajouter un élève</button></div>
+<div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>Élève</th><th>Classe</th><th>Progression</th><th>Score</th><th>Activité</th><th>Statut</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+<button class="ghost sm" id="csv" style="margin-top:10px">⬇️ Exporter en CSV</button></div>
+<div class="panel" id="detail" style="display:none"></div></section>
+<section id="thm" style="display:none"><div class="panel"><h2>Verrouiller / déverrouiller un thème</h2><div id="units"></div></div></section>
+<section id="msg" style="display:none"><div class="panel"><h2>Envoyer un message</h2><label>Destinataire</label><select id="mto"><option value="">👥 Tout le groupe</option></select>
+<label>Message</label><textarea id="mbody" rows="3" maxlength="500"></textarea><button id="send">Envoyer</button></div><div class="panel"><h2>Historique</h2><div id="mlist"></div></div></section>
+<section id="set" style="display:none"><div class="panel"><h2>Code d'accès du club</h2><input id="code"><button id="saveCode">Enregistrer le code</button></div>
+<div class="panel"><h2>Zone sensible</h2><button class="danger" id="wipe">🗑️ Effacer l'historique de TOUS les élèves</button></div></section></div>
+<div class="wrap" id="deny" style="display:none"><div class="card"><h2>Accès réservé</h2><p>Ce compte n'est pas administrateur.</p></div></div>
+<div class="wrap auth" id="login"><div class="card"><h2>Connexion admin</h2><label>Téléphone</label><input id="lp" type="tel"><label>Mot de passe</label><input id="lw" type="password"><div class="err" id="le"></div><button id="lb" style="width:100%">Entrer</button></div></div>
+<script>
+const $=id=>document.getElementById(id),esc=t=>String(t??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const U=[['unit1','Unit 1: School Life'],['unit2','Unit 2: Family and Friends'],['unit3','Unit 3: Food and Drinks'],['unit4','Unit 4: Daily Routine'],['unit5','Unit 5: Sports and Leisure'],['unit6','Unit 6: Travel and Holidays'],['unit7','Unit 7: Nature and Environment'],['unit8','Unit 8: Technology and Media'],['unit9','Unit 9: Health and Feelings'],['unit10','Unit 10: Shopping and Money']];
+const TOT=U.length*20;let B=[],locked=new Set();
+$('lb').onclick=async()=>{const r=await sb.auth.signInWithPassword({email:emailOf($('lp').value),password:$('lw').value});if(r.error)$('le').textContent='Identifiants incorrects.';else init()};
+$('out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+async function init(){const{data:{session}}=await sb.auth.getSession();if(!session)return;$('login').style.display='none';
+ const{data:me}=await sb.from('profiles').select('role').eq('id',session.user.id).single();if(!me||me.role!=='admin'){$('deny').style.display='block';return}
+ $('app').style.display='block';await load();units();msgs();const c=await sb.from('club_settings').select('value').eq('key','club_code').single();$('code').value=c.data?.value||''}
+async function load(){const r=await sb.rpc('admin_board');B=r.data||[];const cl=[...new Set(B.map(b=>b.class_name))].sort(),v=$('fc').value;
+ $('fc').innerHTML='<option value="">Toutes les classes</option>'+cl.map(c=>`<option ${c===v?'selected':''}>${esc(c)}</option>`).join('');
+ $('mto').innerHTML='<option value="">👥 Tout le groupe</option>'+B.map(b=>`<option value="${b.id}">${esc(b.last_name+' '+b.first_name)}</option>`).join('');
+ const day=Date.now()-864e5,act=B.filter(b=>b.last_activity&&new Date(b.last_activity)>day).length,sum=B.reduce((a,b)=>a+b.validated,0);
+ $('kpis').innerHTML=[[B.length,'Élèves inscrits'],[act,'Actifs (24 h)'],[sum,'Phrases validées'],[B.length?Math.round(sum/B.length/TOT*100)+'%':'0%','Progression moyenne']].map(k=>`<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');draw()}
+function draw(){const q=$('q').value.toLowerCase(),c=$('fc').value,s=$('sort').value;
+ const ranked=[...B].sort((a,b)=>b.points-a.points||b.validated-a.validated),rk=new Map(ranked.map((b,i)=>[b.id,i+1]));
+ let L=B.filter(b=>(!c||b.class_name===c)&&(`${b.last_name} ${b.first_name} ${b.phone}`.toLowerCase().includes(q)));
+ L.sort((a,b)=>s==='name'?a.last_name.localeCompare(b.last_name):s==='last'?new Date(b.last_activity||0)-new Date(a.last_activity||0):s==='validated'?b.validated-a.validated:b.points-a.points);
+ $('rows').innerHTML=L.map(b=>`<tr><td data-l="Rang"><b>${rk.get(b.id)}</b></td><td data-l="Élève"><a href="#" data-d="${b.id}"><b>${esc(b.last_name)} ${esc(b.first_name)}</b></a><br><small>${esc(b.phone)}</small></td><td data-l="Classe">${esc(b.class_name)}</td>
+ <td data-l="Progression" style="min-width:110px"><div class="bar"><i style="width:${b.validated/TOT*100}%"></i></div><small>${b.validated}/${TOT} (${Math.round(b.validated/TOT*100)}%)</small></td><td data-l="Score"><b>${b.points}</b></td>
+ <td data-l="Activité"><small>${b.last_activity?new Date(b.last_activity).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}):'—'}</small></td>
+ <td data-l="Statut"><span class="pill ${b.status==='blocked'?'bl':''}">${b.status==='blocked'?'Bloqué':'Actif'}</span></td>
+ <td><div class="acts"><button class="sm ghost" data-a="tog" data-i="${b.id}">${b.status==='blocked'?'Débloquer':'Bloquer'}</button><button class="sm ghost" data-a="pw" data-i="${b.id}">🔑</button><button class="sm ghost" data-a="clr" data-i="${b.id}">🧹</button><button class="sm danger" data-a="del" data-i="${b.id}">🗑️</button></div></td></tr>`).join('')||'<tr><td colspan="8">Aucun élève.</td></tr>'}
+['q','fc','sort'].forEach(i=>$(i).oninput=draw);
+$('rows').onclick=async e=>{const d=e.target.closest('[data-d]');if(d){e.preventDefault();return detail(d.dataset.d)}
+ const t=e.target.closest('[data-a]');if(!t)return;const id=t.dataset.i,b=B.find(x=>x.id===id),n=b.first_name+' '+b.last_name,a=t.dataset.a;let r;
+ if(a==='tog')r=await sb.from('profiles').update({status:b.status==='blocked'?'active':'blocked'}).eq('id',id);
+ else if(a==='pw'){const p=prompt('Nouveau mot de passe pour '+n+' (6 caractères min.) :');if(!p)return;r=await sb.rpc('admin_set_password',{p_user:id,p_password:p})}
+ else if(a==='clr'){if(!confirm("Effacer tout l'historique de "+n+' ?'))return;r=await sb.rpc('admin_clear_history',{p_user:id})}
+ else if(a==='del'){if(!confirm('Supprimer définitivement '+n+' et ses données ?'))return;r=await sb.rpc('admin_delete_student',{p_user:id})}
+ if(r?.error)alert('Erreur : '+r.error.message);else{if(a==='pw')alert('Mot de passe modifié.');await load()}};
+async function detail(id){const b=B.find(x=>x.id===id),[p,a]=await Promise.all([sb.from('sentence_progress').select('unit_id,idx,best_score,attempts,validated').eq('user_id',id),sb.from('activity').select('unit_id,idx,score,created_at').eq('user_id',id).order('created_at',{ascending:false}).limit(15)]);
+ const m={};(p.data||[]).forEach(r=>(m[r.unit_id]=m[r.unit_id]||[]).push(r));const D=$('detail');D.style.display='block';
+ D.innerHTML=`<h2>${esc(b.last_name)} ${esc(b.first_name)} · ${esc(b.class_name)}</h2><p>📞 ${esc(b.phone)} · Score ${b.points} · ${b.validated}/${TOT} phrases · ${b.attempts} essais</p><h3 style="margin:12px 0 6px">Par thème</h3>`+U.map(([u,n])=>{const r=m[u]||[],v=r.filter(x=>x.validated).length;
+ return `<details><summary>${n} — ${v}/20 <div class="bar" style="margin:4px 0"><i style="width:${v*5}%"></i></div></summary><div class="scroll"><table class="tbl"><tbody>${r.sort((x,y)=>x.idx-y.idx).map(x=>`<tr><td>Phrase ${x.idx+1}</td><td>${x.validated?'✅':'⏳'}</td><td>Meilleur : ${x.best_score}%</td><td>${x.attempts} essai(s)</td></tr>`).join('')||'<tr><td>Aucune activité</td></tr>'}</tbody></table></div></details>`}).join('')
+ +`<h3 style="margin:12px 0 6px">Derniers essais</h3>`+((a.data||[]).map(x=>`<div><small>${new Date(x.created_at).toLocaleString('fr-FR')}</small> · ${x.unit_id} phrase ${x.idx+1} · <b>${x.score}%</b></div>`).join('')||'—')+`<br><button class="sm ghost" onclick="$('detail').style.display='none'">Fermer</button>`;D.scrollIntoView({behavior:'smooth'})}
+$('add').onclick=async()=>{const f=prompt("Nom :"),p=f&&prompt('Prénom :'),c=p&&prompt('Classe :'),t=c&&prompt('Téléphone :'),w=t&&prompt('Mot de passe initial (6 caractères min.) :');if(!w)return;
+ const code=$('code').value,tmp=supabase.createClient(CFG.url,CFG.key,{auth:{persistSession:false,autoRefreshToken:false}}),ph=normPhone(t);
+ const r=await tmp.auth.signUp({email:emailOf(ph),password:w,options:{data:{last_name:f,first_name:p,class_name:c,phone:ph,club_code:code}}});
+ if(r.error)alert('Erreur : '+r.error.message);else{alert('Élève ajouté.');load()}};
+$('csv').onclick=()=>{const h='Rang;Nom;Prénom;Classe;Téléphone;Phrases validées;Score;Essais;Statut\n',r=[...B].sort((a,b)=>b.points-a.points).map((b,i)=>[i+1,b.last_name,b.first_name,b.class_name,b.phone,b.validated,b.points,b.attempts,b.status].join(';')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+h+r],{type:'text/csv'}));a.download='classement-club.csv';a.click()};
+async function units(){const l=await sb.from('locked_units').select('unit_id');locked=new Set((l.data||[]).map(x=>x.unit_id));
+ $('units').innerHTML=U.map(([u,n])=>`<div class="msg" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>${locked.has(u)?'🔒':'🔓'} ${n}</span><button class="sm ${locked.has(u)?'':'ghost'}" data-u="${u}">${locked.has(u)?'Déverrouiller':'Verrouiller'}</button></div>`).join('')}
+$('units').onclick=async e=>{const u=e.target.dataset.u;if(!u)return;const r=locked.has(u)?await sb.from('locked_units').delete().eq('unit_id',u):await sb.from('locked_units').insert({unit_id:u});if(r.error)alert(r.error.message);units()};
+async function msgs(){const r=await sb.from('messages').select('*').order('created_at',{ascending:false}).limit(30);
+ $('mlist').innerHTML=(r.data||[]).map(m=>{const b=B.find(x=>x.id===m.recipient_id);return `<div class="msg"><b>${b?esc(b.first_name+' '+b.last_name):'👥 Groupe'}</b><br>${esc(m.body)}<br><small>${new Date(m.created_at).toLocaleString('fr-FR')}</small> <button class="sm danger" data-m="${m.id}">Supprimer</button></div>`}).join('')||'Aucun message.'}
+$('mlist').onclick=async e=>{if(e.target.dataset.m){await sb.from('messages').delete().eq('id',e.target.dataset.m);msgs()}};
+$('send').onclick=async()=>{const body=$('mbody').value.trim();if(!body)return;const r=await sb.from('messages').insert({body,recipient_id:$('mto').value||null});if(r.error)alert(r.error.message);else{$('mbody').value='';msgs()}};
+$('saveCode').onclick=async()=>{const c=$('code').value.trim();if(c.length<4)return alert('Code trop court.');const r=await sb.rpc('admin_set_code',{p_code:c});alert(r.error?r.error.message:'Code mis à jour.')};
+$('wipe').onclick=async()=>{if(prompt('Tapez EFFACER pour confirmer :')!=='EFFACER')return;const r=await sb.rpc('admin_clear_history');alert(r.error?r.error.message:'Historique effacé.');load()};
+$('tabs').onclick=e=>{const t=e.target.dataset.t;if(!t)return;[...$('tabs').children].forEach(b=>b.classList.toggle('on',b===e.target));['stu','thm','msg','set'].forEach(s=>$(s).style.display=s===t?'block':'none')};
+init();
+</script></body></html>

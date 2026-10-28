@@ -3,596 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Voice Trainer - English Pronunciation</title>
-  <style>
-    /* ============================================================
-           RESET & BASE – CLEAN & MODERN
-           ============================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(145deg, #f9e7b2 0%, #f5d0b8 50%, #e8c9d9 100%);
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    /* Arrière‑plan scolaire flou (simulé) */
-    body::before {
-      content: "📚 ✏️ 🎒 📖 🖍️ 🍎 📓 🏫 ✨";
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      font-size: 120px;
-      letter-spacing: 60px;
-      word-break: break-all;
-      opacity: 0.08;
-      filter: blur(6px);
-      pointer-events: none;
-      z-index: 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-      color: #4a2e1b;
-      transform: rotate(-5deg) scale(1.2);
-    }
-
-    .container {
-      max-width: 820px;
-      width: 100%;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ============================================================
-           HEADER – JOYEUX MAIS PLUS SOBRE
-           ============================================================ */
-    .header {
-      background: linear-gradient(135deg, #ff8a5c, #ff6f3c);
-      color: white;
-      padding: 20px 24px;
-      border-radius: 60px 60px 30px 30px;
-      margin-bottom: 20px;
-      text-align: center;
-      box-shadow: 0 4px 0 #c94f2a, 0 8px 20px rgba(0, 0, 0, 0.10);
-      transform: rotate(-0.5deg);
-      transition: transform 0.2s;
-    }
-
-    .header:hover {
-      transform: rotate(0deg) scale(1.01);
-    }
-
-    .header h1 {
-      font-size: 1.8rem;
-      letter-spacing: 0.5px;
-      text-shadow: 2px 2px 0 #b84a2a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .header h1 span {
-      background: #ffd966;
-      color: #5a2d1a;
-      font-size: 1rem;
-      padding: 4px 16px;
-      border-radius: 40px;
-      /* Suppression de l'ombre interne lourde */
-      box-shadow: none;
-      border: 2px solid #fff3c9;
-    }
-
-    .header p {
-      font-size: 1rem;
-      margin-top: 6px;
-      opacity: 0.95;
-      background: rgba(255, 255, 255, 0.2);
-      display: inline-block;
-      padding: 4px 20px;
-      border-radius: 40px;
-      backdrop-filter: blur(4px);
-      font-weight: 600;
-    }
-
-    /* ============================================================
-           HOME SCREEN – CARTES AMICALES
-           ============================================================ */
-    .home-screen {
-      background: rgba(255, 255, 255, 0.70);
-      backdrop-filter: blur(12px);
-      border-radius: 48px;
-      padding: 24px 20px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .home-screen h2 {
-      color: #4a2e1b;
-      margin-bottom: 18px;
-      text-align: center;
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .home-screen h2::after {
-      content: "🌈";
-      font-size: 2rem;
-    }
-
-    .text-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .text-card {
-      background: white;
-      border: 3px solid #f5cba0;
-      border-radius: 32px;
-      padding: 18px 22px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      box-shadow: 0 4px 0 #dba87a, 0 6px 12px rgba(0, 0, 0, 0.04);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .text-card:active {
-      transform: scale(0.97);
-      box-shadow: 0 1px 0 #dba87a;
-    }
-
-    .text-card:hover {
-      border-color: #ff8a5c;
-      background: #fff7ed;
-    }
-
-    .text-card .card-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .text-card h3 {
-      color: #3d2314;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    .text-card p {
-      font-size: 0.8rem;
-      color: #7a5a3e;
-      background: #f0e3d8;
-      display: inline-block;
-      padding: 2px 14px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-
-    .text-card .text-tag {
-      background: #ff8a5c;
-      color: white;
-      padding: 4px 14px;
-      border-radius: 30px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      box-shadow: inset 0 -2px 0 #b85f3a;
-      white-space: nowrap;
-    }
-
-    /* ============================================================
-           PRACTICE SCREEN – CLAIR ET JOYEUX
-           ============================================================ */
-    .practice-screen {
-      display: none;
-    }
-
-    .back-btn {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(8px);
-      color: #3d2314;
-      margin-bottom: 16px;
-      padding: 14px 20px;
-      font-size: 1rem;
-      font-weight: 700;
-      width: 100%;
-      border: none;
-      border-radius: 60px;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #c0a38a;
-      transition: all 0.1s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .back-btn:active {
-      transform: scale(0.96);
-      box-shadow: 0 1px 0 #c0a38a;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(16px);
-      border-radius: 48px;
-      padding: 24px 20px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
-      border: 2px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .text-header {
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 4px dashed #ffb08a;
-    }
-
-    .text-header h3 {
-      color: #3d2314;
-      font-size: 1.3rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .text-header h3::before {
-      content: "📘";
-      font-size: 1.8rem;
-    }
-
-    /* ============================================================
-           SENTENCE BOX – GRAND ET LISIBLE AVEC TRADUCTION
-           ============================================================ */
-    .sentence-box {
-      background: linear-gradient(145deg, #fff5e6, #ffefe0);
-      border-left: 8px solid #ff8a5c;
-      padding: 20px 24px;
-      border-radius: 32px;
-      margin-bottom: 20px;
-      box-shadow: inset 0 -2px 0 #dba87a;
-    }
-
-    .sentence-text {
-      font-size: 1.4rem;
-      font-weight: 700;
-      line-height: 1.5;
-      color: #2d1a0e;
-      word-break: break-word;
-    }
-
-    .sentence-translation {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 2px dashed #ffb08a;
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: #5a3f2a;
-      font-style: italic;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .sentence-translation::before {
-      content: "🇫🇷";
-      font-style: normal;
-      font-size: 1.2rem;
-    }
-
-    /* ============================================================
-           CONTROLS – BOUTONS MODERNES
-           ============================================================ */
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-      justify-content: center;
-    }
-
-    button {
-      border: none;
-      padding: 14px 24px;
-      border-radius: 60px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      min-width: 110px;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: inherit;
-    }
-
-    button:active {
-      transform: scale(0.94);
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      transform: none;
-      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
-      cursor: not-allowed;
-    }
-
-    #playBtn {
-      background: #6ec6ff;
-      color: #003d66;
-      box-shadow: 0 4px 0 #3d8fc9;
-    }
-
-    #repeatBtn {
-      background: #ffb347;
-      color: #4d2b00;
-      box-shadow: 0 4px 0 #cc8a2e;
-    }
-
-    #repeatBtn.recording {
-      background: #ff6b6b;
-      color: #5a1a1a;
-      box-shadow: 0 4px 0 #b34747;
-      animation: pulse 1s infinite;
-    }
-
-    #nextBtn {
-      background: #7bcfb0;
-      color: #1a4a3a;
-      box-shadow: 0 4px 0 #4f9a80;
-    }
-
-    #nextBtn.success {
-      background: #4caf84;
-      color: white;
-      box-shadow: 0 4px 0 #2e7d5e;
-    }
-
-    #resetBtn {
-      background: #ff8a8a;
-      color: #5a1a1a;
-      box-shadow: 0 4px 0 #b85a5a;
-    }
-
-    button.outline {
-      background: transparent;
-      border: 3px solid #7bcfb0;
-      color: #1a4a3a;
-      box-shadow: none;
-    }
-
-    /* ============================================================
-           VISUALIZER – FUNKY WAVES
-           ============================================================ */
-    .visualizer {
-      background: #2a1f3d;
-      border-radius: 40px;
-      padding: 16px 20px;
-      margin: 16px 0;
-      text-align: center;
-      box-shadow: inset 0 -4px 0 #1a1230, 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    canvas {
-      width: 100%;
-      height: 70px;
-      background: #1c142e;
-      border-radius: 24px;
-      display: block;
-      box-shadow: inset 0 0 20px #0f0a1a;
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #b8a6d6;
-    }
-
-    .status.listening {
-      color: #ff8a8a;
-      animation: pulse 1s infinite;
-    }
-
-    .status.success {
-      color: #7bcfb0;
-    }
-
-    /* ============================================================
-           PROGRESS – COLORÉ ET CLAIR
-           ============================================================ */
-    .progress-bar {
-      height: 14px;
-      background: #e6d9c8;
-      border-radius: 40px;
-      margin: 16px 0 8px;
-      overflow: hidden;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #ffb347, #ff8a5c, #ff6f3c);
-      width: 0%;
-      border-radius: 40px;
-      transition: width 0.5s ease;
-    }
-
-    .progress-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #4a2e1b;
-    }
-
-    /* ============================================================
-           FEEDBACK – CLAIR ET ENCOURAGEANT
-           ============================================================ */
-    .feedback {
-      margin-top: 16px;
-      padding: 16px 20px;
-      border-radius: 32px;
-      font-size: 1rem;
-      line-height: 1.5;
-      min-height: 60px;
-      font-weight: 600;
-      border: 3px solid transparent;
-      background: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(4px);
-    }
-
-    .feedback-success {
-      background: #d4edda;
-      border-color: #28a745;
-      color: #155724;
-    }
-
-    .feedback-error {
-      background: #f8d7da;
-      border-color: #dc3545;
-      color: #721c24;
-    }
-
-    .feedback-warning {
-      background: #fff3cd;
-      border-color: #ffc107;
-      color: #856404;
-    }
-
-    .feedback-info {
-      background: #d1ecf1;
-      border-color: #17a2b8;
-      color: #0c5460;
-    }
-
-    /* ============================================================
-           MIC STATUS – AMICAL
-           ============================================================ */
-    .mic-status {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(4px);
-      border-radius: 60px;
-      padding: 10px 16px;
-      margin-bottom: 16px;
-      text-align: center;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #2d5a3a;
-      border: 2px solid #b8d9c0;
-    }
-
-    .mic-status.error {
-      background: #ffebee;
-      border-color: #e57373;
-      color: #b71c1c;
-    }
-
-    .mic-status.waiting {
-      background: #fff3cd;
-      border-color: #ffd54f;
-      color: #7a5a00;
-    }
-
-    .compat-warning {
-      background: #ffe0b2;
-      border-radius: 60px;
-      padding: 10px 16px;
-      margin-bottom: 14px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #bf5a00;
-      text-align: center;
-      display: none;
-      border: 2px solid #ffa726;
-    }
-
-    .compat-warning.show {
-      display: block;
-    }
-
-    /* ============================================================
-           ANIMATIONS
-           ============================================================ */
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.4;
-      }
-    }
-
-    /* ============================================================
-           RESPONSIVE – TOUJOURS AMICAL
-           ============================================================ */
-    @media (min-width: 640px) {
-      .text-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-      }
-
-      .header h1 {
-        font-size: 2.2rem;
-      }
-
-      .sentence-text {
-        font-size: 1.6rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header h1 {
-        font-size: 1.3rem;
-      }
-      .sentence-text {
-        font-size: 1.1rem;
-      }
-      .sentence-translation {
-        font-size: 0.95rem;
-      }
-      button {
-        min-width: 80px;
-        padding: 12px 16px;
-        font-size: 0.85rem;
-      }
-      .controls {
-        gap: 8px;
-      }
-    }
-  </style>
+  <title>Mikolongo English Club</title><meta name="theme-color" content="#0a2463"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="config.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -601,19 +13,20 @@
     <!-- ============================================================
     HEADER – JOYEUX
     ============================================================ -->
-    <div class="header">
-      <h1>
-        🎤 MIKOLONGO ENGLISH CLUB
-        <span>REPEAT2SPEAK</span>
-      </h1>
-      <p>👂 Écoute → 🗣️ Parle → ⭐ Répète</p>
-    </div>
-
-    <!-- ============================================================
-    HOME SCREEN
+    <div class="top"><h1>🎤 MIKOLONGO ENGLISH CLUB<small>Écoute → Parle → Répète</small></h1>
+<div id="userBar" style="display:none;text-align:right"><b id="uName"></b><br><small id="uPts"></small><br><button class="sm ghost" id="logoutBtn">Déconnexion</button></div></div>
+<div id="authScreen" class="card auth"><div class="tabs"><button class="on" id="tLogin">Connexion</button><button id="tReg">Inscription</button></div>
+<form id="authForm" autocomplete="on"><div id="regFields" style="display:none"><div class="row2"><div><label>Nom</label><input id="fLast" required></div><div><label>Prénom</label><input id="fFirst" required></div></div>
+<label>Classe</label><input id="fClass" list="classes" placeholder="ex : 2nde A, Tle D" required><datalist id="classes"><option>2nde A<option>2nde B<option>1ère A<option>1ère B<option>Tle A1<option>Tle A2<option>Tle B<option>Tle C<option>Tle D</datalist></div>
+<label>Numéro de téléphone</label><input id="fPhone" type="tel" inputmode="tel" required placeholder="ex : 077 00 00 00">
+<label>Mot de passe (6 caractères min.)</label><input id="fPass" type="password" minlength="6" required>
+<div id="codeBox" style="display:none"><label>Code d'accès du club</label><input id="fCode" inputmode="numeric" autocomplete="off"></div>
+<div class="err" id="authErr"></div><button id="authBtn" style="width:100%">Se connecter</button></form></div>
+<div id="msgBox" style="display:none" class="card"><h2>📩 Messages du club</h2><div id="msgList"></div></div>
+<!-- HOME SCREEN
     ============================================================ -->
-    <div id="homeScreen" class="home-screen">
-      <h2>📚 Choisis une unité</h2>
+    <div id="homeScreen" class="home-screen" style="display:none">
+      <h2>📚 Choisis une unité</h2><div class="bar" style="margin-bottom:14px"><i id="allBar" style="width:0"></i></div>
       <div class="text-grid" id="textGrid">
         <!-- Généré dynamiquement -->
       </div>
@@ -640,7 +53,7 @@
           <button id="playBtn">🔊 Écouter</button>
           <button id="repeatBtn">🎤 Parler</button>
           <button id="nextBtn" class="outline" disabled>⏩ Suivant</button>
-          <button id="resetBtn">🔄 Reset</button>
+          <button id="resetBtn" style="display:none">🔄 Reset</button>
         </div>
 
         <div class="sentence-box">
@@ -980,28 +393,13 @@
     }
     window.addEventListener('resize', resizeCanvas);
 
-    function getStorageKey() {
-      return `voice_progress_${currentTextId}`;
-    }
-
-    function loadProgress() {
-      let saved = localStorage.getItem(getStorageKey());
-      if (saved) {
-        progress = JSON.parse(saved);
-        if (progress.length > sentences.length) progress = progress.slice(0, sentences.length);
-        while (progress.length < sentences.length) progress.push(false);
-      } else {
-        progress = new Array(sentences.length).fill(false);
-      }
-      currentIndex = 0;
-      updateUI();
-    }
-
-    function saveProgress() {
-      localStorage.setItem(getStorageKey(), JSON.stringify(progress));
-      updateUI();
-    }
-
+    let progMap={},lockedSet=new Set(),ME=null;
+    function loadProgress(){const n=sentences.length;progress=(progMap[currentTextId]||[]).slice(0,n);while(progress.length<n)progress.push(false);
+      const f=progress.indexOf(false);currentIndex=f<0?0:f;updateUI();}
+    function saveProgress(){progMap[currentTextId]=progress.slice();updateUI();}
+    function totals(){let v=0;for(const k in progMap)v+=progMap[k].filter(Boolean).length;return v}
+    function refreshHeader(){const v=totals(),t=Object.values(textsData).reduce((a,u)=>a+u.sentences.length,0);
+      document.getElementById('uPts').textContent=v+'/'+t+' phrases';document.getElementById('allBar').style.width=Math.round(v/t*100)+'%';}
     function updateUI() {
       if (sentences.length === 0) return;
       let done = progress.filter(v => v === true).length;
@@ -1245,6 +643,7 @@
       const target = sentences[currentIndex].en;
       const sim = calculateSimilarity(spoken, target);
       const percent = Math.round(sim * 100);
+      sb.rpc('record_attempt',{p_unit:currentTextId,p_idx:currentIndex,p_score:percent}).then(({error})=>{if(error){showFeedback(error.message.includes('locked')?'🔒 Unité verrouillée':error.message.includes('blocked')?'⛔ Accès suspendu':'⚠️ Connexion perdue : résultat non enregistré','error')}else refreshHeader()});
 
       voiceStatus.innerHTML = `🎤✅ ${percent}%`;
       voiceStatus.className = 'status success';
@@ -1318,7 +717,7 @@
     function loadText(textId) {
       currentTextId = textId;
       const data = textsData[textId];
-      if (!data) return;
+      if (!data || lockedSet.has(textId)) return;
       sentences = data.sentences.slice();
       if (sentences.length === 0) {
         sentences = [{ en: "(Aucune phrase)", fr: "(Aucune traduction)" }];
@@ -1338,18 +737,14 @@
     function buildHomeScreen() {
       textGrid.innerHTML = '';
       for (let [id, data] of Object.entries(textsData)) {
+        const d=(progMap[id]||[]).filter(Boolean).length,n=data.sentences.length,lk=lockedSet.has(id);
         let card = document.createElement('div');
-        card.className = 'text-card';
-        card.innerHTML = `
-          <div class="card-left">
-            <h3>${data.title}</h3>
-            <p>${data.tag || '📘'}</p>
-          </div>
-          <span class="text-tag">🎤 ${data.sentences.length}</span>
-        `;
+        card.className = 'text-card'+(lk?' locked':'');
+        card.innerHTML = `<h3>${data.title}</h3><p>${lk?'🔒 Verrouillée par le club':data.tag}</p><div class="bar"><i style="width:${d/n*100}%"></i></div><p>${d}/${n} phrases</p>`;
         card.onclick = () => loadText(id);
         textGrid.appendChild(card);
       }
+      refreshHeader();
     }
 
     // =============================================================
@@ -1360,7 +755,7 @@
     nextBtn.onclick = nextSegment;
     resetBtn.onclick = resetProgress;
     backToHomeBtn.onclick = () => {
-      homeScreen.style.display = 'block';
+      buildHomeScreen();homeScreen.style.display = 'block';
       practiceScreen.style.display = 'none';
       if (recognition) { try { recognition.stop(); } catch (e) {} }
       stopListening();
@@ -1385,8 +780,36 @@
     // =============================================================
     // 10. INITIALISATION
     // =============================================================
-    buildHomeScreen();
     resizeCanvas();
+    // ---------- Authentification ----------
+    const $=id=>document.getElementById(id);let reg=false;
+    function mode(r){reg=r;$('regFields').style.display=$('codeBox').style.display=r?'block':'none';$('tReg').className=r?'on':'';$('tLogin').className=r?'':'on';
+      $('authBtn').textContent=r?"Créer mon compte":'Se connecter';$('authErr').textContent='';
+      for(const i of ['fLast','fFirst','fClass','fCode'])$(i).required=r;}
+    $('tLogin').onclick=e=>{e.preventDefault();mode(false)};$('tReg').onclick=e=>{e.preventDefault();mode(true)};
+    $('authForm').onsubmit=async e=>{e.preventDefault();const b=$('authBtn');b.disabled=true;$('authErr').textContent='';
+      const phone=normPhone($('fPhone').value);
+      if(phone.length<8||phone.length>12){$('authErr').textContent='Numéro de téléphone invalide.';b.disabled=false;return}
+      const email=emailOf(phone),password=$('fPass').value;let r;
+      if(reg){r=await sb.auth.signUp({email,password,options:{data:{last_name:$('fLast').value,first_name:$('fFirst').value,class_name:$('fClass').value,phone,club_code:$('fCode').value.trim()}}});
+        if(r.error)$('authErr').textContent=/already|registered/i.test(r.error.message)?'Ce numéro est déjà inscrit : connecte-toi.':'Inscription refusée : vérifie le code du club.';}
+      else{r=await sb.auth.signInWithPassword({email,password});if(r.error)$('authErr').textContent='Numéro ou mot de passe incorrect.';}
+      b.disabled=false;if(!r.error)start();};
+    $('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+    async function start(){
+      const{data:{session}}=await sb.auth.getSession();if(!session)return;
+      const{data:me}=await sb.from('profiles').select('*').eq('id',session.user.id).single();
+      if(!me||me.status==='blocked'){await sb.auth.signOut();$('authErr').textContent='Accès suspendu. Contacte le responsable du club.';return}
+      if(me.role==='admin'){location.href='admin.html';return}
+      ME=me;$('uName').textContent=me.first_name+' '+me.last_name;$('userBar').style.display='block';$('authScreen').style.display='none';
+      const[p,l,m]=await Promise.all([sb.from('sentence_progress').select('unit_id,idx,validated').eq('user_id',me.id),sb.from('locked_units').select('unit_id'),
+        sb.from('messages').select('body,created_at').order('created_at',{ascending:false}).limit(10)]);
+      progMap={};(p.data||[]).forEach(r=>{(progMap[r.unit_id]=progMap[r.unit_id]||[])[r.idx]=r.validated});
+      for(const k in progMap)progMap[k]=Array.from(progMap[k],v=>!!v);
+      lockedSet=new Set((l.data||[]).map(r=>r.unit_id));
+      if(m.data&&m.data.length){$('msgBox').style.display='block';$('msgList').innerHTML=m.data.map(x=>`<div class="msg">${x.body.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}<br><small>${new Date(x.created_at).toLocaleDateString('fr-FR')}</small></div>`).join('')}
+      buildHomeScreen();homeScreen.style.display='block';}
+    start();
   </script>
 
 </body>
